@@ -1,37 +1,40 @@
 import React, { useState } from "react";
 
-const Recherche = ({ onSearch }) => {
+export default function Recherche({ onSearch }) {
   const [search, setSearch] = useState("");
   const [year, setYear] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch({ search, year }); // Transmettre les données au parent (ex: App.js)
+    onSearch(search, year);
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
+    <form onSubmit={handleSubmit} className="space-y-2">
       <div>
-        <label>Recherche :</label>
+        <label className="block">Nom de la commune :</label>
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Entrez un lieu..."
+          className="border rounded p-2 w-full"
         />
       </div>
       <div>
-        <label>Année :</label>
+        <label className="block">Année :</label>
         <input
           type="number"
           value={year}
           onChange={(e) => setYear(e.target.value)}
-          placeholder="Ex: 2024"
+          className="border rounded p-2 w-full"
         />
       </div>
-      <button type="submit">Rechercher</button>
+      <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
+        Rechercher
+      </button>
     </form>
   );
-};
-
-export default Recherche;
+}

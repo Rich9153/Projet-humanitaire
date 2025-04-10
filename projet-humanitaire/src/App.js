@@ -1,42 +1,35 @@
-import React, { useState } from 'react';
-import './App.css';
-import Recherche from './components/Recherche';
-import Carte from './components/Carte';
+import React, { useState } from "react";
+import Recherche from "./components/Recherche";
+import MapComponent from "./components/MapComponent";
+import Timeline from "./components/Timeline";
 
 export default function App() {
-  const [donneerecherche, setDonneerecherche] = useState(null);
-  const [coordinates, setCoordinates] = useState([48.8566, 2.3522]); // Paris par défaut
+  const [searchResult, setSearchResult] = useState(null);
+  const [coordinates, setCoordinates] = useState(null);
 
-  // Simuler une API qui retourne des coordonnées pour une commune donnée
-  const fetchCoordinates = async (commune) => {
-    const fakeDatabase = {
-      "Paris": [48.8566, 2.3522],
-      "Marseille": [43.2965, 5.3698],
-      "Lyon": [45.764, 4.8357],
-    };
-
-    return fakeDatabase[commune] || null; // Retourne null si la commune n'existe pas
-  };
-
-  const handlesearch = async (data) => {
-    console.log("Données reçues : ", data);
-    setDonneerecherche(data);
-
-    // Simuler un appel à une API pour récupérer les coordonnées
-    const fetchedCoordinates = await fetchCoordinates(data.search);
-    if (fetchedCoordinates) {
-      setCoordinates(fetchedCoordinates); // Met à jour les coordonnées de la carte
-    } else {
-      console.log("Commune non trouvée.");
-      setCoordinates([48.8566, 2.3522]); // Si aucune coordonnée n'est trouvée, afficher Paris par défaut
+  const handleSearch = async (search, year) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/recherche?nom=${search}&annee=${year}`
+      );
+      const data = await response.json();
+      setSearchResult(data);
+  
+      if (data && data.latitude && data.longitude) {
+        setCoordinates({ lat: data.latitude, lng: data.longitude });
+      }
+    } catch (error) {
+      console.error("Erreur lors de la requête API:", error);
     }
   };
+  
 
   return (
-    <div className="App">
-      <h1>Carte interactive</h1>
-      <Recherche onSearch={handlesearch} />
-      <Carte coordinates={coordinates} />
+    <div className="p-4 space-y-6">
+      <h1 className="text-2xl font-bold">Projet Humanitaire : Recherche de commune</h1>
+      <Recherche onSearch={handleSearch} />
+      <MapComponent coordinates={coordinates} />
+      {searchResult && <Timeline history={searchResult.historique} />}
     </div>
   );
 }
