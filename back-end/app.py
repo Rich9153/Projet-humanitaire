@@ -87,10 +87,9 @@ def rechercher_evenements():
     annee = request.args.get("annee")
 
     if not nom:
-       erreur = {"erreur": "Le paramètre 'nom' est requis."}
-       response_json = json.dumps(erreur, ensure_ascii=False, indent=2)
-       return Response(response_json, content_type="application/json; charset=utf-8"), 400
-
+        erreur = {"erreur": "Le paramètre 'nom' est requis."}
+        response_json = json.dumps(erreur, ensure_ascii=False, indent=2)
+        return Response(response_json, content_type="application/json; charset=utf-8"), 400
 
     conn = get_db_connection()
     cursor = conn.cursor()
